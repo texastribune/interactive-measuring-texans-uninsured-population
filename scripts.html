@@ -10,6 +10,8 @@
 <script type='text/javascript' src='https://s3.amazonaws.com/static.texastribune.org/data/health/ACA/Enrollment/datab.js'></script>
 
 <script type='text/javascript'>// <![CDATA[
+(function() {
+
 var Who = Backbone.Model.extend({
     returnData: function() {
       var self = this;
@@ -439,4 +441,6 @@ uninsured.reset(whoData);
 activeWho.set(uninsured.findWhere({id: 'Age'}));
 insured.reset(enrolledData);
 activeEnrolled.set(insured.findWhere({id: 'Age'}));
+
+})();
 // ]]></script>
