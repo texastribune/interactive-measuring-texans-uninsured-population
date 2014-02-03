@@ -13,33 +13,32 @@
 (function() {
 
 var Who = Backbone.Model.extend({
-    returnData: function() {
-      var self = this;
-      var payload = [];
-
-      _.each(this.get('xdata'), function(v,i) {
-          payload.push({
-            label: self.get('xlabels')[i],
-            data: self.get('xdata')[i]
-          });
-        });
-      return payload;
-    }
+  returnData: function() {
+    var self = this;
+    var payload = [];
+    _.each(this.get('xdata'), function(v,i) {
+      payload.push({
+        label: self.get('xlabels')[i],
+        data: self.get('xdata')[i]
+      });
+    });
+    return payload;
+  }
 });
 
 var Enrolled = Backbone.Model.extend({
-    returnData: function() {
-      var self = this;
-      var payload = [];
+  returnData: function() {
+    var self = this;
+    var payload = [];
 
-      _.each(this.get('ydata'), function(v,i) {
-          payload.push({
-            label: self.get('ylabels')[i],
-            data: self.get('ydata')[i]
-          });
-        });
-      return payload;
-    }
+    _.each(this.get('ydata'), function(v,i) {
+      payload.push({
+        label: self.get('ylabels')[i],
+        data: self.get('ydata')[i]
+      });
+    });
+    return payload;
+  }
 });
 
 var Uninsured = Backbone.Collection.extend({
