@@ -149,7 +149,15 @@ var BarChartView = Backbone.View.extend({
   },
 
   renderChart: function(model) {
-    var myPalette = ['rgb(177, 33, 37)', 'rgb(62, 103, 176)', 'rgb(68, 171, 223)', 'rgb(252, 193, 15)', 'rgb(55, 157, 146)', 'rgb(153, 61, 136)', 'rgb(76, 90, 105)'];
+    var myPalette = [
+          'rgb(177, 33, 37)',
+          'rgb(62, 103, 176)',
+          'rgb(68, 171, 223)',
+          'rgb(252, 193, 15)',
+          'rgb(55, 157, 146)',
+          'rgb(153, 61, 136)',
+          'rgb(76, 90, 105)'
+        ];
     DevExpress.viz.core.registerPalette('mySuperPalette', myPalette);
 
     var parentWidth = this.$el.parent().width();
@@ -182,33 +190,41 @@ var BarChartView = Backbone.View.extend({
       valueAxis: {
         title: 'Rate in 2012',
         label: {
-             format: 'percent'
-           }
+          format: 'percent'
+        }
       },
       title: 'Percent Uninsured in the U.S., 5 Most Populous States',
       palette: 'mySuperPalette',
       tooltip: {
-            enabled: true,
-            percentPrecision: 2,
-            customizeText: function (value) {
-                return value.percentText;
-            }
+        enabled: true,
+        percentPrecision: 2,
+        customizeText: function (value) {
+          return value.percentText;
         }
-      });
-    }
+      }
+    });
+  }
 });
 
 var PieView = Backbone.View.extend({
-    el: '#chartContainer',
+  el: '#chartContainer',
 
-    initialize: function() {
-        this.listenTo(activeWho, 'add', this.renderChart);
-      },
+  initialize: function() {
+      this.listenTo(activeWho, 'add', this.renderChart);
+  },
 
-    renderChart: function(model) {
+  renderChart: function(model) {
 
     var dataSource = model.returnData();
-    var myPalette = ['rgb(177, 33, 37)', 'rgb(62, 103, 176)', 'rgb(68, 171, 223)', 'rgb(252, 193, 15)', 'rgb(55, 157, 146)', 'rgb(153, 61, 136)', 'rgb(76, 90, 105)'];
+    var myPalette = [
+          'rgb(177, 33, 37)',
+          'rgb(62, 103, 176)',
+          'rgb(68, 171, 223)',
+          'rgb(252, 193, 15)',
+          'rgb(55, 157, 146)',
+          'rgb(153, 61, 136)',
+          'rgb(76, 90, 105)'
+        ];
     DevExpress.viz.core.registerPalette('mySuperPalette', myPalette);
 
     var parentWidth = this.$el.parent().width();
@@ -217,38 +233,36 @@ var PieView = Backbone.View.extend({
     this.$el.attr({width: parentWidth, height: height});
 
     this.$el.dxPieChart({
-
-        dataSource: dataSource,
-        series: [
-            {
-                argumentField: 'label',
-                valueField: 'data',
-                label:{
-                    visible: true,
-                    format: 'largeNumber',
-                    connector:{
-                        visible:true,
-                        width: 1
-                    }
-                }
+      dataSource: dataSource,
+      series: [
+        {
+          argumentField: 'label',
+          valueField: 'data',
+          label: {
+            visible: true,
+            format: 'largeNumber',
+            connector: {
+              visible:true,
+              width: 1
             }
-        ],
-        legend: {
-          verticalAlignment: 'bottom',
-          horizontalAlignment: 'center'
-        },
-        tooltip: {
-            enabled: true,
-            percentPrecision: 2,
-            customizeText: function (value) {
-                return value.percentText;
-            }
-        },
-        title: 'Who Are the Uninsured?',
-        palette: 'mySuperPalette'
-      });
-}
-
+          }
+        }
+      ],
+      legend: {
+        verticalAlignment: 'bottom',
+        horizontalAlignment: 'center'
+      },
+      tooltip: {
+        enabled: true,
+        percentPrecision: 2,
+        customizeText: function (value) {
+          return value.percentText;
+        }
+      },
+      title: 'Who Are the Uninsured?',
+      palette: 'mySuperPalette'
+    });
+  }
 });
 
 var BarChartViewB = Backbone.View.extend({
@@ -260,14 +274,29 @@ var BarChartViewB = Backbone.View.extend({
   },
 
   renderChart: function(model) {
-    var myPalette = ['rgb(177, 33, 37)', 'rgb(62, 103, 176)', 'rgb(68, 171, 223)', 'rgb(252, 193, 15)', 'rgb(55, 157, 146)', 'rgb(153, 61, 136)', 'rgb(76, 90, 105)'];
+    var myPalette = [
+          'rgb(177, 33, 37)',
+          'rgb(62, 103, 176)',
+          'rgb(68, 171, 223)',
+          'rgb(252, 193, 15)',
+          'rgb(55, 157, 146)',
+          'rgb(153, 61, 136)',
+          'rgb(76, 90, 105)'
+        ];
     DevExpress.viz.core.registerPalette('mySuperPalette', myPalette);
 
     var parentWidth = this.$el.parent().width();
     var height = $(window).width() > 767 ? 400 : 350;
 
     var chartDataSource = [
-      {series: 'Total Uninsured', 'Ineligible Immigrants': 1226000,  'Ineligible (Too High of Income or Has Employer Coverage)': 1264000,  'Eligible for Tax Credits': 1756000,  'In the Coverage Gap': 1046000,   'Eligible for Medicaid/CHIP': 874000},
+      {
+        series: 'Total Uninsured',
+        'Ineligible Immigrants': 1226000,
+        'Ineligible (Too High of Income or Has Employer Coverage)': 1264000,
+        'Eligible for Tax Credits': 1756000,
+        'In the Coverage Gap': 1046000,
+        'Eligible for Medicaid/CHIP': 874000
+      },
     ];
 
     this.$el.attr({width: parentWidth, height: height});
@@ -308,36 +337,45 @@ var BarChartViewB = Backbone.View.extend({
         valueField: 'Eligible for Medicaid/CHIP'
       }],
       legend: {
-        visible: false},
+        visible: false
+      },
       valueAxis: {
         title: 'Texans Without Health Insurance',
         label: {
-             format: 'percent'
-           }
+          format: 'percent'
+        }
       },
       title: 'How Many of Uninsured Texans are Eligible for Assistance?',
       palette: 'mySuperPalette',
       tooltip: {
-            enabled: true,
-            percentPrecision: 2,
-            customizeText: function (value) {
-                return value.percentText;
-            }
-        },
-      });
-    }
+        enabled: true,
+        percentPrecision: 2,
+        customizeText: function (value) {
+          return value.percentText;
+        }
+      },
+    });
+  }
 });
 var PieViewB = Backbone.View.extend({
-    el: '#chartContainerD',
+  el: '#chartContainerD',
 
-    initialize: function() {
-        this.listenTo(activeEnrolled, 'add', this.renderChart);
-      },
+  initialize: function() {
+    this.listenTo(activeEnrolled, 'add', this.renderChart);
+  },
 
-    renderChart: function(model) {
+  renderChart: function(model) {
 
     var dataSource = model.returnData();
-    var myPalette = ['rgb(177, 33, 37)', 'rgb(62, 103, 176)', 'rgb(68, 171, 223)', 'rgb(252, 193, 15)', 'rgb(55, 157, 146)', 'rgb(153, 61, 136)', 'rgb(76, 90, 105)'];
+    var myPalette = [
+          'rgb(177, 33, 37)',
+          'rgb(62, 103, 176)',
+          'rgb(68, 171, 223)',
+          'rgb(252, 193, 15)',
+          'rgb(55, 157, 146)',
+          'rgb(153, 61, 136)',
+          'rgb(76, 90, 105)'
+        ];
     DevExpress.viz.core.registerPalette('mySuperPalette', myPalette);
 
     var parentWidth = this.$el.parent().width();
@@ -346,43 +384,41 @@ var PieViewB = Backbone.View.extend({
     this.$el.attr({width: parentWidth, height: height});
 
     this.$el.dxPieChart({
-
-        dataSource: dataSource,
-        series: [
-            {
-                argumentField: 'label',
-                valueField: 'data',
-                label:{
-                    visible: true,
-                    customizeText: function(value){
-                        return value.argumentText + ': ' + value.valueText + '%';
-                    },
-                    format: 'largeNumber',
-                    connector:{
-                        visible:true,
-                        width: 1
-                    }
-                }
+      dataSource: dataSource,
+      series: [
+        {
+          argumentField: 'label',
+          valueField: 'data',
+          label: {
+            visible: true,
+            customizeText: function(value) {
+              return value.argumentText + ': ' + value.valueText + '%';
+            },
+            format: 'largeNumber',
+            connector:{
+              visible:true,
+              width: 1
             }
-        ],
-        legend: {
-          verticalAlignment: 'bottom',
-          horizontalAlignment: 'center'
-        },
-        tooltip: {
-            enabled: true,
-            percentPrecision: 2,
-            customizeText: function (value) {
-                return value.percentText;
-            }
-        },
-        title: 'How Does Enrollment Look, So Far?',
-        palette: 'mySuperPalette'
-      });
-}
-
-
+          }
+        }
+      ],
+      legend: {
+        verticalAlignment: 'bottom',
+        horizontalAlignment: 'center'
+      },
+      tooltip: {
+        enabled: true,
+        percentPrecision: 2,
+        customizeText: function (value) {
+          return value.percentText;
+        }
+      },
+      title: 'How Does Enrollment Look, So Far?',
+      palette: 'mySuperPalette'
+    });
+  }
 });
+
 function commas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
