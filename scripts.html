@@ -164,8 +164,13 @@ var BarChartView = Backbone.View.extend({
     var height = $(window).width() > 767 ? 400 : 350;
 
     var chartDataSource = [
-      {state: 'Texas', percent: .23},  {state: 'Florida', percent: .205},  {state: 'California', percent: .178}, {state: 'United States', percent: .149},  {state: 'New York', percent: .113}, {state: 'Pennsylvania', percent: .097},
-    ];
+          {state: 'Texas', percent: .23},
+          {state: 'Florida', percent: .205},
+          {state: 'California', percent: .178},
+          {state: 'United States', percent: .149},
+          {state: 'New York', percent: .113},
+          {state: 'Pennsylvania', percent: .097},
+        ];
 
     this.$el.attr({width: parentWidth, height: height});
     this.$el.dxChart({
