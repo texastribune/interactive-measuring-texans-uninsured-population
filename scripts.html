@@ -1,16 +1,14 @@
-<script type='text/javascript' src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
-<script type='text/javascript' src='//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js'></script>
-
-<script src='https://s3.amazonaws.com/static.texastribune.org/common/vendor/modernizr/modernizr.min.js'></script>
-<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js'></script>
-<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.0/backbone-min.js'></script>
-<script type='text/javascript' src='https://s3.amazonaws.com/static.texastribune.org/chartjs/globalize.js'></script>
-<script type='text/javascript' src='https://s3.amazonaws.com/static.texastribune.org/chartjs/dx.chartjs.debug.js'></script>
 <script type='text/javascript' src='https://s3.amazonaws.com/static.texastribune.org/data/health/ACA/Enrollment/data.js'></script>
 <script type='text/javascript' src='https://s3.amazonaws.com/static.texastribune.org/data/health/ACA/Enrollment/datab.js'></script>
 
-<script type='text/javascript'>// <![CDATA[
-(function() {
+<script>
+require.config({
+  paths: {
+    'd3': 'd3/3.4.1/d3.min'
+  }
+});
+
+require(['d3', 'underscore', 'backbone'], function(d3, _, backbone) {
 
 var Who = Backbone.Model.extend({
   returnData: function() {
@@ -158,56 +156,93 @@ var BarChartView = Backbone.View.extend({
           'rgb(153, 61, 136)',
           'rgb(76, 90, 105)'
         ];
-    DevExpress.viz.core.registerPalette('mySuperPalette', myPalette);
+    // DevExpress.viz.core.registerPalette('mySuperPalette', myPalette);
 
     var parentWidth = this.$el.parent().width();
     var height = $(window).width() > 767 ? 400 : 350;
+    var width = parentWidth / 6;
 
     var chartDataSource = [
-          {state: 'Texas', percent: .23},
-          {state: 'Florida', percent: .205},
-          {state: 'California', percent: .178},
-          {state: 'United States', percent: .149},
-          {state: 'New York', percent: .113},
-          {state: 'Pennsylvania', percent: .097},
+          {state: 'Texas', percent: 23},
+          {state: 'Florida', percent: 20.5},
+          {state: 'California', percent: 17.8},
+          {state: 'United States', percent: 14.9},
+          {state: 'New York', percent: 11.3},
+          {state: 'Pennsylvania', percent: 9.7},
         ];
 
+    var x = d3.scale.linear()
+      .domain([0, 1])
+      .range([0, width]);
+    var y = d3.scale.linear()
+      .domain([0, 30])
+      .rangeRound([0, height]);
+
+    var chart = d3.select(this.el).append('svg');
+    chart
+      .attr('width', '100%')
+      .attr('height', height)
+      .attr('class', 'bar-chart');
+
+    var rect = chart.selectAll('rect')
+      .data(chartDataSource)
+      .enter().append('g')
+        .attr('class', 'percent-uninsured');
+
+    rect.append('rect')
+      .attr('x', function(d, i) { return x(i) - .5; })
+      .attr('y', function(d) { return height - y(d.percent) - .5; })
+      .attr('class', 'percent-uninsured')
+      .attr('width', function() { return width * .80; })
+      .attr('height', function(d) { return y(d.percent); });
+
+    rect.append('text')
+      .attr('class', 'label')
+      .attr('x', function(d, i) { return x(i) + ((width * .8) / 2); })
+      .attr('y', function(d, i) { return 10; })
+      .attr('dx', -3)
+      .attr('dy', '0.35em')
+      .attr('text-anchor', 'middle')
+      .text(function(d) {
+        console.log(d);
+        return d.state; });
+
     this.$el.attr({width: parentWidth, height: height});
-    this.$el.dxChart({
-      dataSource: chartDataSource,
-      series: {
-        argumentField: 'state',
-        valueField: 'percent',
-        type: 'bar',
-        color: 'rgb(155, 206, 200)',
-        label: {
-          visible: true,
-          format: 'percent',
-          connector: {
-            visible: true,
-            width: 1
-          }
-        }
-      },
-      legend: {
-        visible: false
-      },
-      valueAxis: {
-        title: 'Rate in 2012',
-        label: {
-          format: 'percent'
-        }
-      },
-      title: 'Percent Uninsured in the U.S., 5 Most Populous States',
-      palette: 'mySuperPalette',
-      tooltip: {
-        enabled: true,
-        percentPrecision: 2,
-        customizeText: function (value) {
-          return value.percentText;
-        }
-      }
-    });
+    // this.$el.dxChart({
+    //   dataSource: chartDataSource,
+    //   series: {
+    //     argumentField: 'state',
+    //     valueField: 'percent',
+    //     type: 'bar',
+    //     color: 'rgb(155, 206, 200)',
+    //     label: {
+    //       visible: true,
+    //       format: 'percent',
+    //       connector: {
+    //         visible: true,
+    //         width: 1
+    //       }
+    //     }
+    //   },
+    //   legend: {
+    //     visible: false
+    //   },
+    //   valueAxis: {
+    //     title: 'Rate in 2012',
+    //     label: {
+    //       format: 'percent'
+    //     }
+    //   },
+    //   title: 'Percent Uninsured in the U.S., 5 Most Populous States',
+    //   palette: 'mySuperPalette',
+    //   tooltip: {
+    //     enabled: true,
+    //     percentPrecision: 2,
+    //     customizeText: function (value) {
+    //       return value.percentText;
+    //     }
+    //   }
+    // });
   }
 });
 
@@ -230,43 +265,43 @@ var PieView = Backbone.View.extend({
           'rgb(153, 61, 136)',
           'rgb(76, 90, 105)'
         ];
-    DevExpress.viz.core.registerPalette('mySuperPalette', myPalette);
+    // DevExpress.viz.core.registerPalette('mySuperPalette', myPalette);
 
     var parentWidth = this.$el.parent().width();
     var height = $(window).width() > 767 ? 400 : 350;
 
     this.$el.attr({width: parentWidth, height: height});
 
-    this.$el.dxPieChart({
-      dataSource: dataSource,
-      series: [
-        {
-          argumentField: 'label',
-          valueField: 'data',
-          label: {
-            visible: true,
-            format: 'largeNumber',
-            connector: {
-              visible:true,
-              width: 1
-            }
-          }
-        }
-      ],
-      legend: {
-        verticalAlignment: 'bottom',
-        horizontalAlignment: 'center'
-      },
-      tooltip: {
-        enabled: true,
-        percentPrecision: 2,
-        customizeText: function (value) {
-          return value.percentText;
-        }
-      },
-      title: 'Who Are the Uninsured?',
-      palette: 'mySuperPalette'
-    });
+    // this.$el.dxPieChart({
+    //   dataSource: dataSource,
+    //   series: [
+    //     {
+    //       argumentField: 'label',
+    //       valueField: 'data',
+    //       label: {
+    //         visible: true,
+    //         format: 'largeNumber',
+    //         connector: {
+    //           visible:true,
+    //           width: 1
+    //         }
+    //       }
+    //     }
+    //   ],
+    //   legend: {
+    //     verticalAlignment: 'bottom',
+    //     horizontalAlignment: 'center'
+    //   },
+    //   tooltip: {
+    //     enabled: true,
+    //     percentPrecision: 2,
+    //     customizeText: function (value) {
+    //       return value.percentText;
+    //     }
+    //   },
+    //   title: 'Who Are the Uninsured?',
+    //   palette: 'mySuperPalette'
+    // });
   }
 });
 
@@ -288,7 +323,7 @@ var BarChartViewB = Backbone.View.extend({
           'rgb(153, 61, 136)',
           'rgb(76, 90, 105)'
         ];
-    DevExpress.viz.core.registerPalette('mySuperPalette', myPalette);
+    // DevExpress.viz.core.registerPalette('mySuperPalette', myPalette);
 
     var parentWidth = this.$el.parent().width();
     var height = $(window).width() > 767 ? 400 : 350;
@@ -305,61 +340,61 @@ var BarChartViewB = Backbone.View.extend({
     ];
 
     this.$el.attr({width: parentWidth, height: height});
-    this.$el.dxChart({
-      dataSource: chartDataSource,
-      commonSeriesSettings: {
-        argumentField: 'series',
-        type: 'fullstackedbar',
-        label: {
-          visible: true,
-          customizeText: function(value){
-            return value.seriesName;
-          },
-          format: 'largeNumber',
-          alignment: 'center',
-          position: 'inside',
-          connector: false
-        }
-      },
-      series: [{
-        name: 'Undocumented Immigrants',
-        valueField: 'Undocumented Immigrants'
-      },
-      {
-        name: 'Ineligible for Assistance',
-        valueField: 'Ineligible (Too High of Income or Has Employer Coverage)'
-      },
-      {
-        name: 'Eligible for Tax Credits',
-        valueField: 'Eligible for Tax Credits'
-      },
-      {
-        name: 'In the Coverage Gap',
-        valueField: 'In the Coverage Gap'
-      },
-      {
-        name: 'Eligible for Medicaid/CHIP',
-        valueField: 'Eligible for Medicaid/CHIP'
-      }],
-      legend: {
-        visible: false
-      },
-      valueAxis: {
-        title: 'Texans Without Health Insurance',
-        label: {
-          format: 'percent'
-        }
-      },
-      title: 'How Many of Uninsured Texans are Eligible for Assistance?',
-      palette: 'mySuperPalette',
-      tooltip: {
-        enabled: true,
-        percentPrecision: 2,
-        customizeText: function (value) {
-          return value.percentText;
-        }
-      },
-    });
+    // this.$el.dxChart({
+    //   dataSource: chartDataSource,
+    //   commonSeriesSettings: {
+    //     argumentField: 'series',
+    //     type: 'fullstackedbar',
+    //     label: {
+    //       visible: true,
+    //       customizeText: function(value){
+    //         return value.seriesName;
+    //       },
+    //       format: 'largeNumber',
+    //       alignment: 'center',
+    //       position: 'inside',
+    //       connector: false
+    //     }
+    //   },
+    //   series: [{
+    //     name: 'Undocumented Immigrants',
+    //     valueField: 'Undocumented Immigrants'
+    //   },
+    //   {
+    //     name: 'Ineligible for Assistance',
+    //     valueField: 'Ineligible (Too High of Income or Has Employer Coverage)'
+    //   },
+    //   {
+    //     name: 'Eligible for Tax Credits',
+    //     valueField: 'Eligible for Tax Credits'
+    //   },
+    //   {
+    //     name: 'In the Coverage Gap',
+    //     valueField: 'In the Coverage Gap'
+    //   },
+    //   {
+    //     name: 'Eligible for Medicaid/CHIP',
+    //     valueField: 'Eligible for Medicaid/CHIP'
+    //   }],
+    //   legend: {
+    //     visible: false
+    //   },
+    //   valueAxis: {
+    //     title: 'Texans Without Health Insurance',
+    //     label: {
+    //       format: 'percent'
+    //     }
+    //   },
+    //   title: 'How Many of Uninsured Texans are Eligible for Assistance?',
+    //   palette: 'mySuperPalette',
+    //   tooltip: {
+    //     enabled: true,
+    //     percentPrecision: 2,
+    //     customizeText: function (value) {
+    //       return value.percentText;
+    //     }
+    //   },
+    // });
   }
 });
 var PieViewB = Backbone.View.extend({
@@ -381,46 +416,46 @@ var PieViewB = Backbone.View.extend({
           'rgb(153, 61, 136)',
           'rgb(76, 90, 105)'
         ];
-    DevExpress.viz.core.registerPalette('mySuperPalette', myPalette);
+    // DevExpress.viz.core.registerPalette('mySuperPalette', myPalette);
 
     var parentWidth = this.$el.parent().width();
     var height = $(window).width() > 767 ? 400 : 350;
 
     this.$el.attr({width: parentWidth, height: height});
 
-    this.$el.dxPieChart({
-      dataSource: dataSource,
-      series: [
-        {
-          argumentField: 'label',
-          valueField: 'data',
-          label: {
-            visible: true,
-            customizeText: function(value) {
-              return value.argumentText + ': ' + value.valueText + '%';
-            },
-            format: 'largeNumber',
-            connector:{
-              visible:true,
-              width: 1
-            }
-          }
-        }
-      ],
-      legend: {
-        verticalAlignment: 'bottom',
-        horizontalAlignment: 'center'
-      },
-      tooltip: {
-        enabled: true,
-        percentPrecision: 2,
-        customizeText: function (value) {
-          return value.percentText;
-        }
-      },
-      title: 'How Does Enrollment Look, So Far?',
-      palette: 'mySuperPalette'
-    });
+    // this.$el.dxPieChart({
+    //   dataSource: dataSource,
+    //   series: [
+    //     {
+    //       argumentField: 'label',
+    //       valueField: 'data',
+    //       label: {
+    //         visible: true,
+    //         customizeText: function(value) {
+    //           return value.argumentText + ': ' + value.valueText + '%';
+    //         },
+    //         format: 'largeNumber',
+    //         connector:{
+    //           visible:true,
+    //           width: 1
+    //         }
+    //       }
+    //     }
+    //   ],
+    //   legend: {
+    //     verticalAlignment: 'bottom',
+    //     horizontalAlignment: 'center'
+    //   },
+    //   tooltip: {
+    //     enabled: true,
+    //     percentPrecision: 2,
+    //     customizeText: function (value) {
+    //       return value.percentText;
+    //     }
+    //   },
+    //   title: 'How Does Enrollment Look, So Far?',
+    //   palette: 'mySuperPalette'
+    // });
   }
 });
 
@@ -445,5 +480,6 @@ activeWho.set(uninsured.findWhere({id: 'Age'}));
 insured.reset(enrolledData);
 activeEnrolled.set(insured.findWhere({id: 'Age'}));
 
-})();
-// ]]></script>
+});
+
+</script>
